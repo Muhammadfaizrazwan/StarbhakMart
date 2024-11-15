@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:starbhakmart/add.dart';
-import 'package:starbhakmart/main.dart';
+import 'package:starbhakmart/home.dart';
 
 void main() {
-  runApp(const upload());
+  runApp(const Upload());
 }
 
-class upload extends StatelessWidget {
-  const upload({super.key});
+class Upload extends StatelessWidget {
+  const Upload({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: ProductListScreen(),
       debugShowCheckedModeBanner: false,
     );
@@ -19,8 +19,9 @@ class upload extends StatelessWidget {
 }
 
 class ProductListScreen extends StatefulWidget {
+  const ProductListScreen({super.key});
   @override
-  _ProductListScreenState createState() => _ProductListScreenState();
+  State<ProductListScreen> createState() => _ProductListScreenState();
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
@@ -57,13 +58,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MyApp()),
+              MaterialPageRoute(builder: (context) => const Home()),
             );
           },
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
             onPressed: () {
               // Add user action here
             },
@@ -83,11 +84,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   MaterialPageRoute(builder: (context) => const Add()),
                 );
               },
-              child: Text('Add Data +'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-              ),
-            ),
+              child: const Text('Add Data +'),
+          ),
+            
             const SizedBox(height: 16),
             Expanded(
               child: ListView.builder(

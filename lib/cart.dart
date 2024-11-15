@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:starbhakmart/main.dart';
+import 'package:starbhakmart/home.dart';
 
 void main() {
   runApp(const Cart());
@@ -19,15 +19,46 @@ class Cart extends StatelessWidget {
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
-  
+
   @override
-  _CartPageState createState() => _CartPageState();
+  State<CartPage> createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
   int burgerKingMediumQuantity = 1;
   int teBotolQuantity = 1;
   int burgerKingSmallQuantity = 1;
+
+  double burgerKingMediumPrice = 5000;
+  double teBotolPrice = 2000;
+  double burgerKingSmallPrice = 10000;
+  double taxRate = 0.11; // 11%
+
+  // Fungsi untuk menghitung PPN
+  double _calculateTax(double subtotal) {
+    return subtotal * taxRate;
+  }
+
+  // Fungsi untuk menghitung total pembayaran
+  double _calculateTotalPayment() {
+    double subtotal = (burgerKingMediumQuantity * burgerKingMediumPrice) +
+                      (teBotolQuantity * teBotolPrice) +
+                      (burgerKingSmallQuantity * burgerKingSmallPrice);
+  double tax = _calculateTax(subtotal);
+  return subtotal + tax;
+}
+
+  void _removeItem(String itemName) {
+    setState(() {
+      if (itemName == 'Burger King Medium') {
+        burgerKingMediumQuantity = 0;
+      } else if (itemName == 'Teh Botol') {
+        teBotolQuantity = 0;
+      } else if (itemName == 'Burger King Small') {
+        burgerKingSmallQuantity = 0;
+      }
+    });
+  }
 
   Widget _buildSummaryRow(String label, String amount, {bool bold = false}) {
     return Row(
@@ -53,6 +84,12 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
+    double subtotal = (burgerKingMediumQuantity * burgerKingMediumPrice) +
+                      (teBotolQuantity * teBotolPrice) +
+                      (burgerKingSmallQuantity * burgerKingSmallPrice);
+    double tax = _calculateTax(subtotal);
+    double totalPayment = subtotal + tax;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -60,7 +97,7 @@ class _CartPageState extends State<CartPage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const MyApp()),
+              MaterialPageRoute(builder: (context) => const Home()),
             );
           },
         ),
@@ -70,41 +107,47 @@ class _CartPageState extends State<CartPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CartItem(
-              imageUrl: 'image/burger.jpg',
-              name: 'Burger King Medium',
-              price: 50000.00,
-              quantity: burgerKingMediumQuantity,
-              onQuantityChanged: (value) {
-                setState(() {
-                  burgerKingMediumQuantity = value;
-                });
-              },
-            ),
+            if (burgerKingMediumQuantity > 0)
+              CartItem(
+                imageUrl: 'image/burger.jpg',
+                name: 'Burger King Medium',
+                price: burgerKingMediumPrice,
+                quantity: burgerKingMediumQuantity,
+                onQuantityChanged: (value) {
+                  setState(() {
+                    burgerKingMediumQuantity = value;
+                  });
+                },
+                onDelete: () => _removeItem('Burger King Medium'),
+              ),
             const SizedBox(height: 16.0),
-            CartItem(
-              imageUrl: 'image/minuman.jpg',
-              name: 'Teh Botol',
-              price: 4000.00,
-              quantity: teBotolQuantity,
-              onQuantityChanged: (value) {
-                setState(() {
-                  teBotolQuantity = value;
-                });
-              },
-            ),
+            if (teBotolQuantity > 0)
+              CartItem(
+                imageUrl: 'image/minuman.jpg',
+                name: 'Teh Botol',
+                price: teBotolPrice,
+                quantity: teBotolQuantity,
+                onQuantityChanged: (value) {
+                  setState(() {
+                    teBotolQuantity = value;
+                  });
+                },
+                onDelete: () => _removeItem('Teh Botol'),
+              ),
             const SizedBox(height: 16.0),
-            CartItem(
-              imageUrl: 'image/burger.jpg',
-              name: 'Burger King Small',
-              price: 35000.00,
-              quantity: burgerKingSmallQuantity,
-              onQuantityChanged: (value) {
-                setState(() {
-                  burgerKingSmallQuantity = value;
-                });
-              },
-            ),
+            if (burgerKingSmallQuantity > 0)
+              CartItem(
+                imageUrl: 'image/burger.jpg',
+                name: 'Burger King Small',
+                price: burgerKingSmallPrice,
+                quantity: burgerKingSmallQuantity,
+                onQuantityChanged: (value) {
+                  setState(() {
+                    burgerKingSmallQuantity = value;
+                  });
+                },
+                onDelete: () => _removeItem('Burger King Small'),
+              ),
             const Spacer(),
             const Divider(),
             Padding(
@@ -112,17 +155,17 @@ class _CartPageState extends State<CartPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSummaryRow('PPN 11%', 'Rp 10.000,00'),
-                  _buildSummaryRow('Total Belanja', 'Rp 94.000,00'),
+                  _buildSummaryRow('PPN 11%', 'Rp ${taxRate.toStringAsFixed(2)}'),
+                  _buildSummaryRow('Total Belanja', 'Rp ${subtotal.toStringAsFixed(2)}'),
                   const SizedBox(height: 8),
-                  _buildSummaryRow('Total Pembayaran', 'Rp 104.000,00', bold: true),
+                  _buildSummaryRow('Total Pembayaran', 'Rp ${totalPayment.toStringAsFixed(2)}', bold: true),
                   const SizedBox(height: 16),
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const MyApp()),
+                          MaterialPageRoute(builder: (context) => const Home()),
                         );
                       },
                       child: const Text('Checkout'),
@@ -144,6 +187,7 @@ class CartItem extends StatefulWidget {
   final double price;
   final int quantity;
   final Function(int) onQuantityChanged;
+  final VoidCallback onDelete;
 
   const CartItem({
     super.key,
@@ -152,10 +196,11 @@ class CartItem extends StatefulWidget {
     required this.price,
     required this.quantity,
     required this.onQuantityChanged,
+    required this.onDelete,
   });
 
   @override
-  _CartItemState createState() => _CartItemState();
+  State<CartItem> createState() => _CartItemState();
 }
 
 class _CartItemState extends State<CartItem> {
@@ -212,6 +257,10 @@ class _CartItemState extends State<CartItem> {
                 widget.onQuantityChanged(widget.quantity + 1);
               },
               icon: const Icon(Icons.add),
+            ),
+            IconButton(
+              onPressed: widget.onDelete,
+              icon: const Icon(Icons.delete, color: Colors.red),
             ),
           ],
         ),

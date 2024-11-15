@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:starbhakmart/main.dart';
+import 'package:starbhakmart/home.dart';
 import 'dart:io';
 import 'upload.dart';
 import 'package:image/image.dart' as img;
@@ -49,7 +49,7 @@ class _AddState extends State<Add> {
           onPressed: () {
             Navigator.push(
             context,
-             MaterialPageRoute(builder: (context) => const MyApp ()),
+             MaterialPageRoute(builder: (context) => const Home()),
           );
           },
         ),
@@ -71,6 +71,7 @@ class _AddState extends State<Add> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                
                 const SizedBox(height: 8),
                 TextFormField(
                   decoration: InputDecoration(
@@ -79,6 +80,12 @@ class _AddState extends State<Add> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nama produk tidak boleh kosong';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 const Text(
@@ -96,6 +103,12 @@ class _AddState extends State<Add> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'harga tidak boleh kosong';
+                    }
+                    return null;
+                  },
                   keyboardType: TextInputType.number,
                   
                 ),
@@ -107,6 +120,7 @@ class _AddState extends State<Add> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(
@@ -114,6 +128,12 @@ class _AddState extends State<Add> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'kategori tidak boleh kosong';
+                    }
+                    return null;
+                  },
                   hint: const Text("Pilih kategori produk"),
                   value: selectedDropdownItem,
                   items: dropdownItems.map((String item) {
@@ -161,7 +181,7 @@ class _AddState extends State<Add> {
                     if (_formKey.currentState!.validate()) {
                       Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const upload()),
+                      MaterialPageRoute(builder: (context) => const Upload()),
                     );
                     }
                   },
